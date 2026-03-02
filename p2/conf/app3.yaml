@@ -4,49 +4,39 @@
 # La regola default nell'Ingress punta a questo service.
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: app3
   namespace: apps
   labels:
     app: app3
-
 spec:
   replicas: 1
-
-selector:
-  matchLabels:
-    app: app3
-
-template:
-  metadata:
-    labels:
+  selector:
+    matchLabels:
       app: app3
-
-spec:
-  containers:
-  - name: app3
-    image: lotrapan/flask-app:18
-  
-ports:
-  - containerPort: 5000
+  template:
+    metadata:
+      labels:
+        app: app3
+    spec:
+      containers:
+      - name: app3
+        image: lotrapan/flask-app:18
+        ports:
+        - containerPort: 5000
 ---
 # Service ClusterIP: espone app3 internamente al cluster su porta 80.
 # Usato come defaultBackend nell'Ingress per le richieste senza HOST specifico.
 apiVersion: v1
 kind: Service
-
 metadata:
   name: app3-service
   namespace: apps
-
 spec:
   selector:
     app: app3
-
-ports:
+  ports:
   - protocol: TCP
     port: 80
     targetPort: 5000
-
-type: ClusterIP
+  type: ClusterIP

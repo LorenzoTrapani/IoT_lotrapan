@@ -3,49 +3,39 @@
 # K3s bilancia automaticamente il traffico tra le 3 repliche via kube-proxy.
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: app2
   namespace: apps
-  labels:               # label "app" con valore "app2"
+  labels:
     app: app2
-
 spec:
   replicas: 3
-
-selector:
-  matchLabels:
-    app: app2
-
-template:
-  metadata:
-    labels:
+  selector:
+    matchLabels:
       app: app2
-
-spec:
-  containers:
-    - name: app2
-      image: lotrapan/flask-app:18
-
-ports:
-  - containerPort: 5000 
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+      - name: app2
+        image: lotrapan/flask-app:18
+        ports:
+        - containerPort: 5000
 ---
 # Service ClusterIP: espone app2 internamente al cluster su porta 80.
 # Il Service fa load balancing automatico tra le 3 repliche del Deployment.
 apiVersion: v1
 kind: Service
-
 metadata:
   name: app2-service
   namespace: apps
-
 spec:
   selector:
     app: app2
-  
-ports:
+  ports:
   - protocol: TCP
     port: 80
     targetPort: 5000
-
-type: ClusterIP
+  type: ClusterIP
