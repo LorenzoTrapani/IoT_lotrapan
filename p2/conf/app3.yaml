@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: app3
-        image: paulbouwer/hello-kubernetes
+        image: nginxdemos/hello
         ports:
         - containerPort: 80
 ---
