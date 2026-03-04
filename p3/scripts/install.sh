@@ -7,10 +7,12 @@ GREEN='\033[0;32m'
 RESET='\033[0m'
 
 install_docker() {
-    echo -e "${BLUE}Starting Docker installation...${RESET}"
+    if command -v docker &>/dev/null; then
+        echo -e "${GREEN}Docker already installed: $(docker --version)${RESET}"
+        return
+    fi
 
-    # elimina vecchie versioni docker se presenti
-    apt-get remove -y docker docker-engine docker.io containerd runc 2>/dev/null || true
+    echo -e "${BLUE}Starting Docker installation...${RESET}"
 
     apt-get update -y
     apt-get install -y ca-certificates curl gnupg lsb-release
@@ -37,9 +39,13 @@ install_docker() {
 }
 
 install_kubectl() {
+    if command -v kubectl &>/dev/null; then
+        echo -e "${GREEN}kubectl already installed: $(kubectl version --client)${RESET}"
+        return
+    fi
+
     echo -e "${BLUE}Starting kubectl installation...${RESET}"
 
-    # check per ultima versione stabile
     KUBECTL_VERSION=$(curl -fsSL https://dl.k8s.io/release/stable.txt)
 
     curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
@@ -67,9 +73,13 @@ install_k3d() {
 
 # installare ArgoCD CLI opzionale ma utile per gestire argocd da terminale
 install_argocd_cli() {
+    if command -v argocd &>/dev/null; then
+        echo -e "${GREEN}ArgoCD CLI already installed: $(argocd version --client)${RESET}"
+        return
+    fi
+
     echo -e "${BLUE}Starting ArgoCD CLI installation...${RESET}"
 
-    # check per ultima versione stabile
     ARGOCD_VERSION=$(curl -fsSL https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
 
     curl -fsSL "https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64" \
