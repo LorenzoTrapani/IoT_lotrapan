@@ -4,6 +4,7 @@ set -e  # Esci immediatamente se un comando fallisce
 
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
+ORANGE='\033[38;5;208m'
 RESET='\033[0m'
 
 install_docker() {
@@ -12,7 +13,7 @@ install_docker() {
         return
     fi
 
-    echo -e "${BLUE}Starting Docker installation...${RESET}"
+    echo -e "${ORANGE}Starting Docker installation...${RESET}"
 
     apt-get update -y
     apt-get install -y ca-certificates curl gnupg lsb-release
@@ -44,7 +45,7 @@ install_kubectl() {
         return
     fi
 
-    echo -e "${BLUE}Starting kubectl installation...${RESET}"
+    echo -e "${ORANGE}Starting kubectl installation...${RESET}"
 
     KUBECTL_VERSION=$(curl -fsSL https://dl.k8s.io/release/stable.txt)
 
@@ -63,7 +64,7 @@ install_k3d() {
         return
     fi
 
-    echo -e "${BLUE}Starting K3d installation...${RESET}"
+    echo -e "${ORANGE}Starting K3d installation...${RESET}"
 
     curl -fsSL https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
@@ -78,7 +79,7 @@ install_argocd_cli() {
         return
     fi
 
-    echo -e "${BLUE}Starting ArgoCD CLI installation...${RESET}"
+    echo -e "${ORANGE}Starting ArgoCD CLI installation...${RESET}"
 
     ARGOCD_VERSION=$(curl -fsSL https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
 
@@ -92,9 +93,9 @@ install_argocd_cli() {
 
 
 # --- Main ---
-echo "=== Installing dependencies... ==="
+echo -e "${BLUE} === Installing dependencies... === ${RESET}"
 install_docker
 install_kubectl
 install_k3d
 install_argocd_cli
-echo "=== Installation completed ==="
+echo -e "${BLUE} === Installations completed === ${RESET}"
