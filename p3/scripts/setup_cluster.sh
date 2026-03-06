@@ -8,8 +8,11 @@ ORANGE='\033[38;5;208m'
 RESET='\033[0m'
 
 CLUSTER_NAME="lotrapanCluster"
-REAL_USER="${SUDO_USER:-$USER}"
-REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+
+# se l'utente non e' nel gruppo docker, ri-esegue lo script con sg docker
+if ! docker info &>/dev/null; then
+    exec sg docker "$0" "$@"
+fi
 
 create_cluster() {
     if k3d cluster list | grep -q "^${CLUSTER_NAME}"; then
@@ -24,10 +27,9 @@ create_cluster() {
         --agents 2
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' created${RESET}"
 
-    mkdir -p "$REAL_HOME/.kube"
-    k3d kubeconfig merge "$CLUSTER_NAME" --kubeconfig-switch-context -o "$REAL_HOME/.kube/config"
-    chown -R "$REAL_USER:$REAL_USER" "$REAL_HOME/.kube"
-    echo -e "${GREEN}kubeconfig saved to $REAL_HOME/.kube/config${RESET}"
+    mkdir -p "$HOME/.kube"
+    k3d kubeconfig merge "$CLUSTER_NAME" --kubeconfig-switch-context -o "$HOME/.kube/config"
+    echo -e "${GREEN}kubeconfig saved to $HOME/.kube/config${RESET}"
 }
 
 create_namespaces() {
