@@ -9,11 +9,6 @@ RESET='\033[0m'
 
 CLUSTER_NAME="lotrapanCluster"
 
-# se l'utente non e' nel gruppo docker, ri-esegue lo script con sg docker
-if ! docker info &>/dev/null; then
-    exec sg docker "$0" "$@"
-fi
-
 create_cluster() {
     if k3d cluster list | grep -q "^${CLUSTER_NAME}"; then
         echo -e "${GREEN}Cluster '$CLUSTER_NAME' already exists${RESET}"
