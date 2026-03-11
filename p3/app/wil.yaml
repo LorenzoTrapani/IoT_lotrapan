@@ -6,18 +6,24 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: #?
+      app: wil-playground
   template:
     metadata:
       labels:
-        app: #?
+        app: wil-playground
     spec:
       containers:
       - name: wil-container
         image: wil42/playground:v2
         ports:
         - containerPort: 8888
-        resources: #?
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
 ---
 apiVersion: v1
 kind: Service
