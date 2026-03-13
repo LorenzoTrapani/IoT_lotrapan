@@ -9,13 +9,13 @@ RESET='\033[0m'
 
 # SETUP Cluster
 
-CLUSTER_NAME="lotrapanCluster"
+CLUSTER_NAME="lotrapanS"
 ARGOCD_NAMESPACE="argocd"
 ARGOCD_VERSION="v2.14.2"
 
 if ! k3d cluster list | grep -q "^${CLUSTER_NAME}"; then
     echo -e "${ORANGE}Creating K3d cluster: $CLUSTER_NAME...${RESET}"
-    k3d cluster create "$CLUSTER_NAME" -p 8888:30420 
+    k3d cluster create "$CLUSTER_NAME" -p 8888:30420 -p 8080:30443
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' created${RESET}"
 else
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' already exists${RESET}"
@@ -53,10 +53,10 @@ CURRENT_TYPE=$(kubectl get svc argocd-server -n "$ARGOCD_NAMESPACE" -o jsonpath=
 
 if ! [ "$CURRENT_TYPE" = "NodePort" ]; then
     kubectl patch svc argocd-server -n "$ARGOCD_NAMESPACE" -p \
-        '{"spec": {"type": "NodePort", "ports": [{"port": 443, "nodePort": 30420}]}}'
+        '{"spec": {"type": "NodePort", "ports": [{"port": 443, "nodePort": 30443}]}}'
 fi
 
-echo -e "${GREEN}ArgoCD server exposed on NodePort 30420 (localhost:8888)${RESET}"
+echo -e "${GREEN}ArgoCD server exposed on NodePort 30443 (localhost:8080)${RESET}"
 
 # get admin password
 
@@ -68,13 +68,13 @@ PASSWORD=$(kubectl get secret argocd-initial-admin-secret \
 
 echo -e "${ORANGE}Logging into ArgoCD...${RESET}"
 for i in $(seq 1 10); do
-    argocd login localhost:8888 --insecure --username admin --password "$PASSWORD" 2>/dev/null && break
+    argocd login localhost:8080 --insecure --username admin --password "$PASSWORD" 2>/dev/null && break
     echo -e "${ORANGE}Waiting for ArgoCD gRPC... ($i/10)${RESET}"
     sleep 5
 done
 
 echo -e "${BLUE}=== ArgoCD ready ===${RESET}"
-echo -e "UI:       https://localhost:8888"
+echo -e "UI:       https://localhost:8080"
 echo -e "user:     admin"
 echo -e "password: ${PASSWORD}"
 

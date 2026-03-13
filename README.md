@@ -63,7 +63,46 @@ All applications use the same container image (`paulbouwer/hello-kubernetes:1.10
 
 ## P3: K3d and Argo CD
 
-Coming soon - GitOps continuous deployment with K3d and Argo CD.
+GitOps continuous deployment pipeline using K3d and Argo CD — no Vagrant required. The cluster runs entirely inside Docker containers on the host machine.
+
+**Architecture:**
+- K3d cluster with two namespaces: `argocd` and `dev`
+- Argo CD monitors a public GitHub repository and auto-deploys changes
+- `wil42/playground` (v1/v2) deployed in the `dev` namespace via a NodePort service
+- Updating the image tag in the repo triggers an automatic rollout
+
+**Ports:**
+- `localhost:8888` → wil-playground app (nodePort 30420)
+- `localhost:8080` → Argo CD UI (nodePort 30443, HTTPS)
+
+**Try it:**
+```bash
+cd p3
+
+bash scripts/launch.sh
+
+# Test the app
+curl http://localhost:8888/
+# {"status":"ok", "message": "v1"}
+
+# Update version: edit p3/app/wil.yaml, change v1 → v2, push to GitHub
+# Argo CD auto-syncs within ~3 minutes, then:
+curl http://localhost:8888/
+# {"status":"ok", "message": "v2"}
+```
+
+**Useful Argo CD commands:**
+```bash
+argocd login localhost:8080 --insecure   # authenticate
+argocd app list                          # list applications
+argocd app get wil-playground            # detailed status
+argocd app sync wil-playground           # force manual sync
+```
+
+**Scripts:**
+- `install.sh` — installs Docker, kubectl, K3d CLI, Argo CD CLI
+- `setup.sh` — creates the K3d cluster, installs Argo CD, exposes it via NodePort
+- `deploy.sh` — registers the GitHub repo in Argo CD and creates the app with auto-sync
 
 ---
 
@@ -71,16 +110,8 @@ Coming soon - GitOps continuous deployment with K3d and Argo CD.
 
 | | K3s | K3d |
 |---|---|---|
-| **Cos'è** | Kubernetes leggero | Wrapper che mette K3s dentro Docker |
-| **Gira su** | VM / bare metal | Container Docker |
-| **Usato in** | P1 e P2 (su VM Vagrant) | P3 (sulla tua VM, senza Vagrant) |
+| **What it is** | Lightweight Kubernetes | Wrapper that runs K3s inside Docker |
+| **Runs on** | VM / bare metal | Docker containers |
+| **Used in** | P1 and P2 (Vagrant VMs) | P3 (directly on the host) |
 
-K3d usa Docker per simulare i nodi del cluster: non hai bisogno di Vagrant e VM separate. Tutto gira come container sulla tua macchina.
-
-
-<!-- CMD ARGOCD: -->
-argocd login localhost:8080          # autenticati
-argocd app list                      # lista applicazioni
-argocd app sync wil-playground       # sincronizza manualmente
-argocd app get wil-playground        # vedi stato dettagliato
-
+K3d simulates cluster nodes as Docker containers — no Vagrant or separate VMs needed.
