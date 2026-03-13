@@ -2,12 +2,9 @@
 
 set -e
 
-BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 ORANGE='\033[38;5;208m'
 RESET='\033[0m'
-
-echo -e "${BLUE}=== Installing dependencies... ===${RESET}"
 
 # Docker
 
@@ -69,8 +66,6 @@ sudo install -m 0755 /tmp/argocd /usr/local/bin/argocd
 rm /tmp/argocd
 
 echo -e "${GREEN}ArgoCD CLI installed: $(argocd version --client)${RESET}"
-
-echo -e "${BLUE}=== Installations completed ===${RESET}"
 
 # add user at the end to prevent crash
 sudo usermod -aG docker "$USER"

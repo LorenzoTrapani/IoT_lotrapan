@@ -2,15 +2,12 @@
 
 set -e
 
-BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 ORANGE='\033[38;5;208m'
 RESET='\033[0m'
 
 REPO_URL="https://github.com/LorenzoTrapani/Inception_of_Things.git"
 APP_NAME="wil-playground"
-
-echo -e "${BLUE}=== Deploying application via ArgoCD ===${RESET}"
 
 argocd repo add "$REPO_URL"
 
@@ -34,5 +31,5 @@ argocd app sync "$APP_NAME"
 echo -e "${ORANGE}Waiting for application to be healthy...${RESET}"
 argocd app wait "$APP_NAME" --health
 
-echo -e "${BLUE}=== Application deployed ===${RESET}"
+echo -e "${GREEN}=== Application deployed ===${RESET}"
 argocd app get "$APP_NAME"

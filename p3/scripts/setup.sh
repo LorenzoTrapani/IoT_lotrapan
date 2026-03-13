@@ -9,8 +9,6 @@ RESET='\033[0m'
 
 # SETUP Cluster
 
-echo -e "${BLUE}=== Setup cluster K3d ===${RESET}"
-
 CLUSTER_NAME="lotrapanCluster"
 ARGOCD_NAMESPACE="argocd"
 ARGOCD_VERSION="v2.14.2"
@@ -36,8 +34,6 @@ done
 
 echo -e "${GREEN}Namespaces ready${RESET}"
 
-echo -e "${BLUE}=== Cluster ready ===${RESET}"
-
 # SETUP ArgoCD
 
 if ! kubectl get deployment argocd-server -n "$ARGOCD_NAMESPACE" &>/dev/null; then
@@ -48,7 +44,7 @@ if ! kubectl get deployment argocd-server -n "$ARGOCD_NAMESPACE" &>/dev/null; th
         -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 fi
 
-# eseguito sempre: aspetta che i pod siano pronti
+# aspetta pod
 echo -e "${ORANGE}Waiting for ArgoCD pods to be ready...${RESET}"
 kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=argocd-server -n "$ARGOCD_NAMESPACE" --timeout=300s
 echo -e "${GREEN}ArgoCD pods ready${RESET}"
