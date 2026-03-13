@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 ORANGE='\033[38;5;208m'
 RESET='\033[0m'
 
-REPO_URL="https://github.com/LorenzoTrapani/Inception_of_Things.git"
+REPO_URL="https://github.com/LorenzoTrapani/IoT_lotrapan.git"
 APP_NAME="wil-playground"
 
 argocd repo add "$REPO_URL"
