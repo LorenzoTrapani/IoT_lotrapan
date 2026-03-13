@@ -82,6 +82,9 @@ cd p3
 bash scripts/launch.sh
 
 # Test the app
+# - go to http://localhost:8888/ and put the credentials given during setup.sh
+
+# or test from CLI:
 curl http://localhost:8888/
 # {"status":"ok", "message": "v1"}
 
@@ -89,6 +92,9 @@ curl http://localhost:8888/
 # Argo CD auto-syncs within ~3 minutes, then:
 curl http://localhost:8888/
 # {"status":"ok", "message": "v2"}
+
+# per eliminare cluster
+k3d cluster delete lotrapanS
 ```
 
 **Useful Argo CD commands:**
