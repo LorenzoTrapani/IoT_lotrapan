@@ -120,4 +120,3 @@ argocd app sync wil-playground           # force manual sync
 | **Runs on** | VM / bare metal | Docker containers |
 | **Used in** | P1 and P2 (Vagrant VMs) | P3 (directly on the host) |
 
-K3d simulates cluster nodes as Docker containers — no Vagrant or separate VMs needed.
